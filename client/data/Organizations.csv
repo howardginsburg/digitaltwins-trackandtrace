@@ -1,0 +1,5 @@
+﻿dtmi:com:microsoft:iot:trackandtrace:organization;1
+OrganizationId, OrganizationName, Tags
+string,string,string
+Org1, Microsoft,
+Org2, YourCo,

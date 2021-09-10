@@ -1,0 +1,17 @@
+
+    {
+      "@id": "dtmi:com:microsoft:iot:trackandtrace:vehicle;1",
+      "@type": "Interface",
+      "displayName": "Vehicle Model",
+      "@context": "dtmi:dtdl:context;2",
+      "extends": "dtmi:com:microsoft:iot:trackandtrace:trackablebase;1",
+      "contents": [
+        {
+          "@type": "Relationship",
+          "@id": "dtmi:com:microsoft:iot:trackandtrace:fleet:rel_has_containers;1",
+          "name": "rel_has_containers",
+          "displayName": "Has Containers",
+          "target": "dtmi:com:microsoft:iot:trackandtrace:container;1"
+        }
+      ]
+    }

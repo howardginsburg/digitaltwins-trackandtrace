@@ -1,0 +1,15 @@
+
+    {
+      "@id": "dtmi:com:microsoft:iot:trackandtrace:container;1",
+      "@type": "Interface",
+      "displayName": "Container Model",
+      "@context": "dtmi:dtdl:context;2",
+      "extends": "dtmi:com:microsoft:iot:trackandtrace:trackablebase;1",
+      "contents": [
+        {
+          "@type": "Property",
+          "name": "Locked",
+          "schema": "boolean"
+        }
+      ]
+    }

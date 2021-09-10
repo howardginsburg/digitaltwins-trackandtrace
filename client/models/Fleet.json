@@ -1,0 +1,37 @@
+
+    {
+      "@id": "dtmi:com:microsoft:iot:trackandtrace:fleet;1",
+      "@type": "Interface",
+      "displayName": "Fleet Model",
+      "@context": "dtmi:dtdl:context;2",
+      "contents": [
+        {
+          "@type": "Property",
+          "name": "FleetId",
+          "schema": "string"
+        },
+        {
+          "@type": "Property",
+          "name": "FleetName",
+          "schema": "string"
+        },
+        {
+            "@type": "Property",
+            "name": "OnboardDate",
+            "schema": "dateTime"
+          },
+        {
+          "@type": "Property",
+          "name": "Tags",
+          "schema": "string"
+        },
+        {
+          "@type": "Relationship",
+          "@id": "dtmi:com:microsoft:iot:trackandtrace:fleet:rel_has_vehicles;1",
+          "name": "rel_has_vehicles",
+          "displayName": "Has Vehicles",
+          "target": "dtmi:com:microsoft:iot:trackandtrace:vehicle;1"
+        }
+      ]
+    }
+  

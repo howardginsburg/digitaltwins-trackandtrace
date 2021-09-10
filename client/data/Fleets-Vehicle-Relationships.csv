@@ -1,0 +1,4 @@
+RelationshipId,RelationshipName,SourceTwinId, TargetTwinId
+Fleet1Vehicle1,rel_has_vehicles,Fleet1, Vehicle1
+Fleet2Vehicle2,rel_has_vehicles,Fleet2, Vehicle2
+Fleet2Vehicle3,rel_has_vehicles,Fleet2, Vehicle3

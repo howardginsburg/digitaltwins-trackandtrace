@@ -1,0 +1,94 @@
+    {
+      "@id": "dtmi:com:microsoft:iot:trackandtrace:trackablebase;1",
+      "@type": "Interface",
+      "displayName": "Trackable Object Base Model",
+      "@context": "dtmi:dtdl:context;2",
+      "contents": [
+        {
+          "@type": "Property",
+          "name": "Id",
+          "schema": "string"
+        },
+        {
+          "@type": "Property",
+          "name": "Make",
+          "schema": "string"
+        },
+        {
+          "@type": "Property",
+          "name": "Model",
+          "schema": "string"
+        },
+        {
+          "@type": "Property",
+          "name": "ConnectionType",
+          "schema": "dtmi:com:microsoft:iot:trackandtrace:customschema:connectiontype;1"
+        },
+        {
+            "@type": "Property",
+            "name": "OnboardDate",
+            "schema": "dateTime"
+          },
+          {
+            "@type": "Property",
+            "name": "GeoLocation",
+            "schema": "dtmi:com:microsoft:iot:trackandtrace:customschema:GeoCord;1"
+          },
+
+          {
+            "@type": "Property",
+            "name": "BatteryLevel",
+            "schema": "double"
+          },
+          {
+            "@type": ["Property", "Temperature"],
+            "name": "AmbientTemperature",
+            "schema": "double",
+            "unit": "degreeFahrenheit"
+          },
+          {
+            "@type": ["Property", "Frequency"],
+            "name": "Vibration",
+            "schema": "double",
+            "unit": "hertz"
+          },
+        {
+          "@type": "Property",
+          "name": "Tags",
+          "schema": "string"
+        }
+      ],
+      "schemas":  [{
+        "@id": "dtmi:com:microsoft:iot:trackandtrace:customschema:connectiontype;1",
+        "@type": "Enum",
+        "valueSchema": "integer",
+        "enumValues": [
+          {
+            "name": "azureiot",
+            "displayName": "Azure IoT",
+            "enumValue": 1
+          },
+          {
+            "name": "generic",
+            "displayName": "Generic",
+            "enumValue": 2
+          }
+        ]
+      },
+      {
+        "@id": "dtmi:com:microsoft:iot:trackandtrace:customschema:GeoCord;1",
+        "@type": "Object",
+        "fields": [
+          {
+            "@id": "dtmi:com:microsoft:iot:trackandtrace:customschema:GeoCord:lat;1",
+            "name": "Latitude",
+            "schema": "double"
+          },
+          {
+            "@id": "dtmi:com:microsoft:iot:trackandtrace:customschema:GeoCord:lon;1",
+            "name": "Longitude",
+            "schema": "double"
+          }
+        ]
+      }]
+    }

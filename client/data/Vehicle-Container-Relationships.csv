@@ -1,0 +1,4 @@
+RelationshipId,RelationshipName,SourceTwinId, TargetTwinId
+Vehicle1Container1,rel_has_containers,Vehicle1, Container1
+Vehicle2Container2,rel_has_containers,Vehicle2, Container2
+Vehicle2Container3,rel_has_containers,Vehicle2, Container3

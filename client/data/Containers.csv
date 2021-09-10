@@ -1,0 +1,6 @@
+dtmi:com:microsoft:iot:trackandtrace:container;1
+Id, Make, Model, ConnectionType
+string,string,string,integer
+Container1,Box,Model A,1
+Container2,Box,Model A,1
+Container3,Box,Model B,2

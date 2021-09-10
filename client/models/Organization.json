@@ -1,0 +1,32 @@
+    {
+      "@id": "dtmi:com:microsoft:iot:trackandtrace:organization;1",
+      "@type": "Interface",
+      "displayName": "Organization Model",
+      "@context": "dtmi:dtdl:context;2",
+      "contents": [
+        {
+          "@type": "Property",
+          "name": "OrganizationId",
+          "schema": "string"
+        },
+        {
+          "@type": "Property",
+          "name": "OrganizationName",
+          "schema": "string",
+          "writable": true
+        },
+        {
+          "@type": "Property",
+          "name": "Tags",
+          "schema": "string",
+          "writable": true
+        },
+        {
+          "@type": "Relationship",
+          "@id": "dtmi:com:microsoft:iot:trackandtrace:organization:rel_has_fleets;1",
+          "name": "rel_has_fleets",
+          "displayName": "Has Fleets",
+          "target": "dtmi:com:microsoft:iot:trackandtrace:fleet;1"
+        }
+      ]
+    }

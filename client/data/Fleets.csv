@@ -1,0 +1,6 @@
+﻿dtmi:com:microsoft:iot:trackandtrace:fleet;1
+FleetId, FleetName, OnboardDate, Tags
+string,string,dateTime,string
+Fleet1, Delivery Vans, 10/12/2019,
+Fleet2, Delivery Cars, 02/03/2018,
+Fleet3, Bikes, 03/01/2012,
