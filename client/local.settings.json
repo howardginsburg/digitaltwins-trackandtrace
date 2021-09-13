@@ -1,3 +1,4 @@
 {
-  "ADTInstanceURL": "https://adt-trackandtrace.api.eus.digitaltwins.azure.net"
+  "ADTInstanceURL": "https://adt-trackandtrace.api.eus.digitaltwins.azure.net",
+  "IoTHubSASKey": "HostName=iothub-trackandtrace.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=ChcNrlER/G+ALtDSeXMYvkiFaSyGTVrSkUljsnCRYgc="
 }

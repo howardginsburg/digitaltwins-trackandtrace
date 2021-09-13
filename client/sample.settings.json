@@ -1,3 +1,4 @@
 {
-  "ADTInstanceURL": "https://<your-twins-instance>.digitaltwins.azure.net"
+  "ADTInstanceURL": "https://<your-twins-instance>.digitaltwins.azure.net",
+  "IoTHubSASKey": "HostName=<your-iot-hub>.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=<your-sas-key"
 }

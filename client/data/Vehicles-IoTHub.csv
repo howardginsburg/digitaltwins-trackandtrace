@@ -3,4 +3,3 @@ Id, Make, Model, ConnectionType
 string,string,string,integer
 Vehicle1,Honda,Odyssey,1
 Vehicle2,Toyota,Sienna,1
-Vehicle3,Ford,Transit,2

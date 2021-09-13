@@ -1,6 +1,8 @@
 ﻿using Azure;
 using Azure.Identity;
 using Azure.DigitalTwins.Core;
+using Microsoft.Azure.Devices;
+using Microsoft.Azure.Devices.Common.Exceptions;
 using Microsoft.Azure.DigitalTwins.Parser;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,7 @@ namespace Demo.Tasks.Client
     class Demo
     {
         private DigitalTwinsClient client = null;
+        private string iothubconnection = null;
 
         private void InitializeClient()
         {
@@ -40,6 +43,8 @@ namespace Demo.Tasks.Client
 
                 var credential = new DefaultAzureCredential();
                 client = new DigitalTwinsClient(new Uri(configuration["ADTInstanceURL"]), credential);
+
+                iothubconnection = configuration["IoTHubSASKey"];
             }
         }
         public async Task Run()
@@ -53,7 +58,8 @@ namespace Demo.Tasks.Client
                 InitializeClient();
                 Console.WriteLine($"[1]   Load models");
                 Console.WriteLine($"[2]   Load data");
-                Console.WriteLine($"[3]   Exit");
+                Console.WriteLine($"[3]   Create IoTHub devices");
+                Console.WriteLine($"[4]   Exit");
                 
                 int selection = -1;
                 
@@ -74,7 +80,11 @@ namespace Demo.Tasks.Client
                 {
                     await HandleDataLoad();
                 }
-                else if (selection == 3)
+                 else if (selection == 3)
+                {
+                    await HandleCreateIoTHubDevices();
+                }
+                else if (selection == 4)
                 {
                     return;
                 }
@@ -235,6 +245,78 @@ namespace Demo.Tasks.Client
                 }
             }
         }
+
+        private async Task HandleCreateIoTHubDevices()
+        {
+            Console.Clear();            
+            string consoleAppDir = Path.Combine(Directory.GetCurrentDirectory(), @"Data");
+            Console.WriteLine($"Reading from {consoleAppDir}");
+
+            Console.WriteLine("Which file contains IoTHub devices?");
+
+            string[] files = Directory.GetFiles(consoleAppDir,"*.csv");
+            for (int i=0; i<files.Length; i++)
+            {
+                Console.WriteLine($"[{i+1}]   {files[i]}");
+            }
+            Console.WriteLine($"[{files.Length+1}]   Back");
+
+            int selection=0;
+            try
+            {
+                selection = int.Parse(Console.ReadLine());                
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
+            if (selection == files.Length+1)
+            {
+                return;
+            }
+            else
+            {
+                string file = files[selection-1];
+                StreamReader r = new StreamReader(file);
+
+                //Skip the model
+                r.ReadLine();
+                //Skip the headers
+                r.ReadLine();
+                //Skip the datatypes
+                r.ReadLine();
+
+                RegistryManager registryManager = RegistryManager.CreateFromConnectionString(iothubconnection);
+                while (!r.EndOfStream)
+                {
+                    string line = r.ReadLine();
+                    if (!String.IsNullOrWhiteSpace(line))
+                    {
+                        string[] values = line.Split(',');
+                        var deviceId = values[0];
+                        Console.WriteLine($"Creating device [{deviceId}]");
+                        
+
+                        try
+                        {
+                            Device device = await registryManager.AddDeviceAsync(new Device(deviceId));
+                        }
+                        catch (DeviceAlreadyExistsException)
+                        {
+                            
+                        }
+                    }
+                }
+            }
+
+            
+            Console.WriteLine($"Press any key to continue...");
+            Console.ReadKey(true);
+    
+        }
+
+        
 
         private object ConvertStringToType(string schema, string val)
         {
