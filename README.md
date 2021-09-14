@@ -36,5 +36,15 @@
     General Containers Simulator
 
     `docker run -it -e "EventHubConnectionString=<Your-EventHub-Connection;EntityPath=general" -e "DeviceList=Container3" -e Template="{\"deviceId\": \"$.DeviceId\", \"time\": \"$.Time\",  \"locked\": \"$.Locked\",\"batterylevel\": \"$.Battery\", \"ambienttemperature\": \"$.AmbientTemperature\"}" -e Variables="[{\"name\": \"Locked\", \"values\": [\"on\", \"off\"]},{\"name\": \"Battery\", \"random\": true, \"max\": 100, \"min\": 0},{\"name\": \"AmbientTemperature\", \"random\": true, \"max\": 90, \"min\": 50}]" -e "MessageCount=0" -e "Interval=5000" mcr.microsoft.com/oss/azure-samples/azureiot-telemetrysimulator:latest`
-    
+
 3. Monitor the digital twins in the Digital Twins Explorer app to see changes.
+   * All Twins: `SELECT * FROM DIGITALTWINS`
+   * All Containers: `SELECT * FROM DIGITALTWINS T WHERE IS_OF_MODEL(T, 'dtmi:com:microsoft:iot:trackandtrace:container;1')`
+   * All Vehicles:`SELECT * FROM DIGITALTWINS T WHERE IS_OF_MODEL(T, 'dtmi:com:microsoft:iot:trackandtrace:vehicle;1')`
+   * All Trackable Twins (Containers and Vehicles): `SELECT * FROM DIGITALTWINS T WHERE IS_OF_MODEL(T, 'dtmi:com:microsoft:iot:trackandtrace:trackablebase;1')`
+   * All Containers that are unlocked:`SELECT * FROM DIGITALTWINS T WHERE IS_OF_MODEL(T, 'dtmi:com:microsoft:iot:trackandtrace:container;1') and Locked = false`
+   * All Containers and Vehicles with an Ambient Temperature > 70: `SELECT * FROM DIGITALTWINS T WHERE IS_OF_MODEL(T, 'dtmi:com:microsoft:iot:trackandtrace:trackablebase;1') and AmbientTemperature > 70`
+   * All Containers and Vehicles with a Battery Level < 25: `SELECT * FROM DIGITALTWINS T WHERE IS_OF_MODEL(T, 'dtmi:com:microsoft:iot:trackandtrace:trackablebase;1') and BatteryLevel < 25`
+   * All Containers on Vehicle1: `SELECT Container FROM DIGITALTWINS Vehicle JOIN Container RELATED Vehicle.rel_has_containers WHERE Vehicle.$dtId = 'Vehicle2' AND IS_OF_MODEL(Container, 'dtmi:com:microsoft:iot:trackandtrace:container;1')`
+   * All Containers for Fleet1 and Fleet2: `SELECT Container FROM DIGITALTWINS Fleet JOIN Vehicle RELATED Fleet.rel_has_vehicles JOIN Container RELATED Vehicle.rel_has_containers WHERE IS_OF_MODEL(Vehicle, 'dtmi:com:microsoft:iot:trackandtrace:vehicle;1') AND IS_OF_MODEL(Container, 'dtmi:com:microsoft:iot:trackandtrace:container;1') AND Fleet.$dtId IN ['Fleet1', 'Fleet2']`
+   * All Containers for Fleet1 and Fleet2 where the AmbientTemperature for the container is > 50: `SELECT Container FROM DIGITALTWINS Fleet JOIN Vehicle RELATED Fleet.rel_has_vehicles JOIN Container RELATED Vehicle.rel_has_containers WHERE IS_OF_MODEL(Vehicle, 'dtmi:com:microsoft:iot:trackandtrace:vehicle;1') AND IS_OF_MODEL(Container, 'dtmi:com:microsoft:iot:trackandtrace:container;1') AND Fleet.$dtId IN ['Fleet1', 'Fleet2'] AND Container.AmbientTemperature > 50`
