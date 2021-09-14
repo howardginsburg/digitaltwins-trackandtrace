@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "eventhuburi": "<Your-EventHub-SAS-Key>;EntityPath=messages",
+    "digitaltwinsuri": "https://<Your-ADT-URI>.digitaltwins.azure.net"
+  }
+}
