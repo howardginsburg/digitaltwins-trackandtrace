@@ -4,7 +4,7 @@
 1. Install Docker on your workstation.
 2. Create an instance of [Azure Digital Twins](https://ms.portal.azure.com/#create/Microsoft.DigitalTwins).
 3. Create an instance of [Azure IoT Hub](https://ms.portal.azure.com/#create/Microsoft.IotHub).
-4. Create an instance of [Azure EventHubs](https://ms.portal.azure.com/#create/Microsoft.EventHub) with an eventhub named 'general'.
+4. Create an instance of [Azure EventHubs](https://ms.portal.azure.com/#create/Microsoft.EventHub) with an eventhubs named 'general' and 'output'.
 5. Create an instance of [Azure Functions](https://ms.portal.azure.com/#create/Microsoft.FunctionApp).
 
 ## Azure Configuration
@@ -12,6 +12,8 @@
 2. Grant the Function Apps Managed Identiy the Digital Twins Owner role on the Azure Digital Twin resource you created.
 3. Create a custom route from the IoT Hub to the Event Hub.
 4. Deploy the [Functions](Functions) to the Function App.  Make sure you set the 'eventhuburi' and 'digitaltwinsuri' in the Function App Configuration settings.
+5. Create a routing endpoint to the 'output' eventhub in your digital twin.
+6. Create a route selecting 'Twin Updates' to your endpoint.
 
 ## Client App Configuration
 1. Rename [sample.local.settings.json](client/sample.local.settings.json) to be 'local.settings.json'.
@@ -48,3 +50,5 @@
    * All Containers on Vehicle1: `SELECT Container FROM DIGITALTWINS Vehicle JOIN Container RELATED Vehicle.rel_has_containers WHERE Vehicle.$dtId = 'Vehicle2' AND IS_OF_MODEL(Container, 'dtmi:com:microsoft:iot:trackandtrace:container;1')`
    * All Containers for Fleet1 and Fleet2: `SELECT Container FROM DIGITALTWINS Fleet JOIN Vehicle RELATED Fleet.rel_has_vehicles JOIN Container RELATED Vehicle.rel_has_containers WHERE IS_OF_MODEL(Vehicle, 'dtmi:com:microsoft:iot:trackandtrace:vehicle;1') AND IS_OF_MODEL(Container, 'dtmi:com:microsoft:iot:trackandtrace:container;1') AND Fleet.$dtId IN ['Fleet1', 'Fleet2']`
    * All Containers for Fleet1 and Fleet2 where the AmbientTemperature for the container is > 50: `SELECT Container FROM DIGITALTWINS Fleet JOIN Vehicle RELATED Fleet.rel_has_vehicles JOIN Container RELATED Vehicle.rel_has_containers WHERE IS_OF_MODEL(Vehicle, 'dtmi:com:microsoft:iot:trackandtrace:vehicle;1') AND IS_OF_MODEL(Container, 'dtmi:com:microsoft:iot:trackandtrace:container;1') AND Fleet.$dtId IN ['Fleet1', 'Fleet2'] AND Container.AmbientTemperature > 50`
+
+4. Monitor the 'output' eventhub for twin updates that can be processed by downstream systems.
