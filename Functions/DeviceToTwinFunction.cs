@@ -73,19 +73,11 @@ namespace Demo.TrackandTrace
                         updateTwin = true;
                     }
                     catch (Exception e) {}
-                    
-                    //var locked = deviceMessage["lock"];
 
-                    //log.LogInformation($"Device:{deviceId} Temperature is:{temperature} and Lock status is{lock}");
-
-                    //Update twin using device temperature
-                    //var updateTwinData = new JsonPatchDocument();
-                    //updateTwinData.AppendReplace("/Temperature", temperature.Value<double>());
-                    //updateTwinData.AppendReplace("/Locked", temperature.Value<double>());
-                    
                     if (updateTwin)
                     {
                         await _client.UpdateDigitalTwinAsync(deviceId.Value<string>(), updateTwinData);
+                        log.LogInformation("Twin data successfully updated!");
                     }
                     
                 }

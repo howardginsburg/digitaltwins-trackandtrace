@@ -1,5 +1,5 @@
 randomValue=$((100 + $RANDOM % 1000))
-resourceGroupName="twinssholdemogroup$randomValue"
+resourceGroupName="twinsholdemogroup$randomValue"
 location="eastus"
 twinsName="twinsholdemoadt$randomValue"
 storageAccountName="twinsholdemostorage$randomValue"
@@ -8,7 +8,7 @@ eventHubName="twinsholdemoeventhub$randomValue"
 functionAppName="twinsholdemofuncapp$randomValue"
 
 # run az login so that rbac commands can be run.
-az login
+#az login
 
 # allow dynamic extension installs.
 az config set extension.use_dynamic_install=yes_without_prompt
@@ -17,9 +17,12 @@ az config set extension.use_dynamic_install=yes_without_prompt
 userName=$(az account list --query "[?isDefault].user.name" -o tsv)
 subscription=$(az account list --query "[?isDefault].id" -o tsv)
 
+echo "Creating resource group..."
 # Create a resource group for the lab.
 az group create --location $location --resource-group $resourceGroupName
 
+
+echo "Creating event hubs..."
 ## Event Hub ###########
 # Create an event hub namespace and eventhubs to hold messages coming from IoT Hub and output messages from Digital Twins.
 az eventhubs namespace create --resource-group $resourceGroupName --name $eventHubName --location $location --sku Standard
@@ -31,8 +34,9 @@ az eventhubs eventhub authorization-rule create --resource-group $resourceGroupN
 eventHubConnection=$(az eventhubs namespace authorization-rule keys list --resource-group $resourceGroupName --namespace-name $eventHubName --name RootManageSharedAccessKey --query "primaryConnectionString" -o tsv)
 #########################
 
+echo "Creating iot hub..."
 ## IoT Hub ##############
-az iot hub create --resource-group $resourceGroupName --name $iotHubName --sku S1 -o tsv --query id
+az iot hub create --resource-group $resourceGroupName --name $iotHubName --sku S1
 # Create a custom end point to the event hub.
 az iot hub routing-endpoint create --resource-group $resourceGroupName --hub-name $iotHubName --endpoint-name all-messages --endpoint-type eventhub --endpoint-resource-group $resourceGroupName --endpoint-subscription-id $subscription --connection-string $eventHubConnection";EntityPath=messages"
 # Route all messages to the event hub and the build in end point for debugging.
@@ -41,6 +45,7 @@ az iot hub route create -g $resourceGroupName --hub-name $iotHubName --endpoint-
 iotHubOwnerConnection=$(az iot hub connection-string show -n $iotHubName --policy-name iothubowner --key-type primary --query connectionString -o tsv)
 #########################
 
+echo "Creating digital twin..."
 ## Azure Digital Twins ######
 # Create Azure Digital Twins and wait until it's created.
 az dt create -n $twinsName -g $resourceGroupName -l $location
@@ -54,27 +59,33 @@ az dt route create -n $twinsName --endpoint-name twinupdates --route-name output
 twinsUri="https://"$(az dt show --dt-name $twinsName --resource-group $resourceGroupName --query "hostName" -o tsv)
 #############################
 
+echo "Creating azure function..."
 ## Azure Function ###########
 # Create a Azure Storage Account 
 az storage account create -n $storageAccountName -g $resourceGroupName -l $location --sku "Standard_LRS"
 # Create an Azure Function App
 az functionapp create --consumption-plan-location $location --name $functionAppName --os-type Windows --resource-group $resourceGroupName --runtime dotnet --storage-account $storageAccountName
 # Set the app settings
+sleep 5
 az functionapp config appsettings set --name $functionAppName --resource-group $resourceGroupName --settings "eventhuburi=$eventHubConnection\";EntityPath=messages\"" "digitaltwinsuri=$twinsUri"
-# Enable the managed identity and grant it rights to the Azure Digital Twins instance to be able to update the twins.
+# Enable the managed identity as we will need to grant it rights to the Azure Digital Twins instance to be able to update the twins.
 az functionapp identity assign -g $resourceGroupName -n $functionAppName
 functionAppIdentity=$(az functionapp identity show --name $functionAppName --resource-group $resourceGroupName --query "principalId" -o tsv)
-az dt role-assignment create -n $twinsName --assignee $functionAppIdentity --role "Azure Digital Twins Data Owner"
 # Download the functions code from github and deploy it.
 curl -L https://github.com/howardginsburg/digitaltwins-trackandtrace/blob/main/Functions/functions-publish.zip?raw=true > functions-publish.zip
 az functionapp deployment source config-zip --resource-group $resourceGroupName -n $functionAppName --src functions-publish.zip
 rm functions-publish.zip
+# Add the azure function managed identity so that it can update the twins as data comes in.
+az dt role-assignment create -n $twinsName --assignee $functionAppIdentity --role "Azure Digital Twins Data Owner"
+
+
 
 #curl -L https://github.com/howardginsburg/digitaltwins-trackandtrace/archive/refs/heads/main.zip > digitaltwins-trackandtrace.zip
 #unzip digitaltwins-trackandtrace.zip
 
-clear
 
+echo ""
+echo ""
 echo "Deployment of Azure resources is successful!"
 echo "Resource Group: " $resourceGroupName
 echo "ADT URL: " $twinsUri

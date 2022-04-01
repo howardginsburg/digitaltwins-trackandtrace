@@ -351,3 +351,4 @@ MigrationBackup/
 SampleClientApp/appsettings.json
 Notes.txt
 Personal Notes.md
+client/local.settings.json

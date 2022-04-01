@@ -1,13 +1,25 @@
 # digitaltwins-trackandtrace
 
-## Resources
+## Deployment of Azure resources
+
+### Automated Deployment
+
+1. Open a Cloud Shell session in the Azure portal or your local workstation.
+2. Download the provisioning script using `curl -L https://raw.githubusercontent.com/howardginsburg/digitaltwins-trackandtrace/main/provision.sh > provision.sh`
+3. Run `bash provision.sh`
+
+### Manual Deployment
+
+#### Resources
+
 1. Install Docker on your workstation.
 2. Create an instance of [Azure Digital Twins](https://ms.portal.azure.com/#create/Microsoft.DigitalTwins).
 3. Create an instance of [Azure IoT Hub](https://ms.portal.azure.com/#create/Microsoft.IotHub).
 4. Create an instance of [Azure EventHubs](https://ms.portal.azure.com/#create/Microsoft.EventHub) with an eventhubs named 'general' and 'output'.
 5. Create an instance of [Azure Functions](https://ms.portal.azure.com/#create/Microsoft.FunctionApp).
 
-## Azure Configuration
+#### Azure Configuration
+
 1. Enable System Assigned/Managed Identity on the Function App.
 2. Grant the Function Apps Managed Identiy the Digital Twins Owner role on the Azure Digital Twin resource you created.
 3. Create a custom route from the IoT Hub to the Event Hub.
@@ -16,10 +28,12 @@
 6. Create a route selecting 'Twin Updates' to your endpoint.
 
 ## Client App Configuration
+
 1. Rename [sample.local.settings.json](client/sample.local.settings.json) to be 'local.settings.json'.
 2. Edit the file and update the 'ADTInstanceURL' and 'IoTHubSASKey' configuration settings.
 
-## Usage
+## Running the Simulation
+
 1. Load your digital twin with the track and trace data using the [sample client](client).
 2. Start instance(s) of the [device simulator](https://docs.microsoft.com/en-us/samples/azure-samples/iot-telemetry-simulator/azure-iot-device-telemetry-simulator/) to send data to IoT Hub.
 
