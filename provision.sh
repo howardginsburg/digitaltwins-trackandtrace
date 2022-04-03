@@ -65,9 +65,10 @@ echo "Creating azure function..."
 az storage account create -n $storageAccountName -g $resourceGroupName -l $location --sku "Standard_LRS"
 # Create an Azure Function App
 az functionapp create --consumption-plan-location $location --name $functionAppName --os-type Windows --resource-group $resourceGroupName --runtime dotnet --storage-account $storageAccountName
+# Wait to make sure the consumption plan is created before trying to deploy the function.
+az resource wait --exists --ids /subscriptions/$subscription/resourceGroups/$resourceGroupName/providers/Microsoft.Web/serverFarms/$location"plan"
 # Set the app settings
-sleep 5
-az functionapp config appsettings set --name $functionAppName --resource-group $resourceGroupName --settings "eventhuburi=$eventHubConnection\";EntityPath=messages\"" "digitaltwinsuri=$twinsUri"
+az functionapp config appsettings set --name $functionAppName --resource-group $resourceGroupName --settings "eventhuburi=$eventHubConnection;EntityPath=messages" "digitaltwinsuri=$twinsUri"
 # Enable the managed identity as we will need to grant it rights to the Azure Digital Twins instance to be able to update the twins.
 az functionapp identity assign -g $resourceGroupName -n $functionAppName
 functionAppIdentity=$(az functionapp identity show --name $functionAppName --resource-group $resourceGroupName --query "principalId" -o tsv)
