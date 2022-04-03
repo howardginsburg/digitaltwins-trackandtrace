@@ -57,7 +57,7 @@ namespace Demo.Tasks.Client
                 Console.WriteLine($"-----------------------------------------------------------");
                 InitializeClient();
                 Console.WriteLine($"[1]   Load models");
-                Console.WriteLine($"[2]   Load data");
+                Console.WriteLine($"[2]   Load model instance data");
                 Console.WriteLine($"[3]   Create IoTHub devices");
                 Console.WriteLine($"[4]   Exit");
                 
@@ -252,32 +252,12 @@ namespace Demo.Tasks.Client
             string consoleAppDir = Path.Combine(Directory.GetCurrentDirectory(), @"Data");
             Console.WriteLine($"Reading from {consoleAppDir}");
 
-            Console.WriteLine("Which file contains IoTHub devices?");
-
-            string[] files = Directory.GetFiles(consoleAppDir,"*.csv");
+            string[] files = Directory.GetFiles(consoleAppDir,"*-IoTHub.csv");
             for (int i=0; i<files.Length; i++)
             {
-                Console.WriteLine($"[{i+1}]   {files[i]}");
-            }
-            Console.WriteLine($"[{files.Length+1}]   Back");
+                Console.WriteLine($"Reading {files[i]}");
 
-            int selection=0;
-            try
-            {
-                selection = int.Parse(Console.ReadLine());                
-            }
-            catch (Exception ex)
-            {
-
-            }
-            
-            if (selection == files.Length+1)
-            {
-                return;
-            }
-            else
-            {
-                string file = files[selection-1];
+                string file = files[i];
                 StreamReader r = new StreamReader(file);
 
                 //Skip the model
@@ -304,7 +284,7 @@ namespace Demo.Tasks.Client
                         }
                         catch (DeviceAlreadyExistsException)
                         {
-                            
+                            Console.WriteLine($"Device {deviceId} exists.  Skipping.");
                         }
                     }
                 }
